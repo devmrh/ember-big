@@ -1,0 +1,8 @@
+<p><%= post.name %></p>
+<p><%= post.body %></p>
+<p><%= post.draft %></p>
+<p>
+          <a class="btn btn-default btn-xs" href="/posts">back</a>
+          <a class="btn btn-success btn-xs" href="/posts/<%= post.id %>/edit">edit</a>
+          <a class="btn btn-danger btn-xs" href="/posts/<%= post.id %>?_method=delete" onclick="return confirm('Are you sure?');">delete</a>
+</p>

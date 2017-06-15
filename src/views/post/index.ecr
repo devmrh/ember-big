@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col-sm-11">
+    <h2>Posts</h2>
+  </div>
+  <div class="col-sm-1">
+    <a class="btn btn-success btn-xs" href="/posts/new">New</a>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Body</th>
+      <th>Draft</th>
+      <th>Actions</th>
+    </tr>
+    <tbody>
+    <%- posts.each do |post| %>
+        <tr>
+          <td><%= post.name %></td>
+          <td><%= post.body %></td>
+          <td><%= post.draft %></td>
+          <td>
+          <span>
+            <a class="btn btn-default btn-xs" href="/posts/<%= post.id %>">read</a>
+            <a class="btn btn-success btn-xs" href="/posts/<%= post.id %>/edit">edit</a>
+            <a class="btn btn-danger btn-xs" href="/posts/<%= post.id %>?_method=delete" onclick="return confirm('Are you sure?');">delete</a>
+          </span>
+          </td>
+        </tr>
+    <%- end %>
+    </tbody>
+  </table>
+</div>

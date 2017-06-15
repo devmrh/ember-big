@@ -1,0 +1,34 @@
+<%- if post.errors %>
+  <ul class="errors">
+  <%- post.errors.each do |error| %>
+    <li><%= error %></li>
+  <%- end %>
+  </ul>
+<%- end %>
+
+<%- action = (post.id ? "/posts/" + post.id.to_s : "/posts") %>
+<form action="<%= action %>" method="post">
+  <%- if post.id %>
+  <input type="hidden" name="_method" value="patch" />
+  <%- end %>
+  <div class="form-group">
+    <input class="form-control" type="text" name="name" placeholder="Name" value="<%= post.name %>" />
+  </div>
+  <div class="form-group">
+    <textarea class="form-control" rows="10" name="body" placeholder="Body"><%= post.body %></textarea>
+  </div>
+  <div class="form-group">
+    <div class="checkbox">
+      <label>
+        <input type="hidden" name="published" value="false" />
+        <%- if post.draft %>
+          <input type="checkbox" name="draft" value="true" checked="true" />Draft
+        <%- else %>
+          <input type="checkbox" name="draft" value="true" /> Draft
+        <%- end %>
+      </label>
+    </div>
+  </div>
+  <button class="btn btn-primary btn-xs" type="submit">Submit</button>
+  <a class="btn btn-default btn-xs" href="/posts">back</a>
+</form>
