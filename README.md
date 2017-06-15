@@ -1,7 +1,3 @@
-# big
-
-Your description here
-
 ## Installation
 
 Create a pg database called `demo` and configure the `config/database.yml`
