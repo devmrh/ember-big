@@ -73,7 +73,7 @@ class TestController < Amber::Controller::Base
   end
 
   def render_with_csrf
-    render("spec/sample/views/test/_form.ecr.slang", layout: false)
+    render("spec/sample/views/test/_form.slang", layout: false)
   end
 end
 

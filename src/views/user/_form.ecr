@@ -1,1 +1,24 @@
-<p>adsadsad</p>
+<%- if post.errors %>
+    <ul class="errors">
+      <%- post.errors.each do |error| %>
+          <li><%= error %></li>
+      <%- end %>
+    </ul>
+<%- end %>
+
+<%- action = (post.id ? "/user/" : "/user") %>
+<form action="<%= action %>" method="post">
+  <%- if post.id %>
+      <input type="hidden" name="_method" value="patch" />
+  <%- end %>
+  <div class="form-group">
+    <input class="form-control" type="text" name="name" placeholder="Name" value="<%= post.name %>" />
+  </div>
+  <div class="form-group">
+    <textarea class="form-control" rows="10" name="body" placeholder="Body"><%= post.username %></textarea>
+  </div>
+  <div class="form-group">
+  </div>
+  <button class="btn btn-primary btn-xs" type="submit">Submit</button>
+  <a class="btn btn-default btn-xs" href="/posts">back</a>
+</form>

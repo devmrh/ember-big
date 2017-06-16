@@ -9,19 +9,6 @@ require "./amber/**"
 
 module Amber
   class Server
-    property port : Int32
-    property name : String
-    setter   project_name : String?
-    property env : String
-    property log : Logger
-    property secret : String
-    property host : String = "0.0.0.0"
-    property port_reuse : Bool = false
-
-    def project_name
-      @project_name ||= @name.gsub(/\W/, "_").downcase
-    end
-
     def self.instance
       @@instance ||= new
     end
@@ -34,6 +21,20 @@ module Amber
       instance
     end
 
+    def self.key_generator
+      instance.key_generator
+    end
+
+    property port : Int32
+    property name : String
+    setter project_name : String?
+    property env : String
+    property log : Logger
+    property secret : String
+    property host : String = "0.0.0.0"
+    property port_reuse : Bool = false
+    getter key_generator : Amber::Support::CachingKeyGenerator
+
     def initialize
       @app_path = __FILE__
       @name = "amber_project"
@@ -41,16 +42,23 @@ module Amber
       @env = "development".colorize(:yellow).to_s
       @log = ::Logger.new(STDOUT)
       @log.level = ::Logger::INFO
-      @secret = SecureRandom.hex
+      @secret = ENV["SECRET_KEY_BASE"]? || SecureRandom.hex(128)
       @host = "0.0.0.0"
       @port_reuse = true
+      @key_generator = Amber::Support::CachingKeyGenerator.new(
+        Amber::Support::KeyGenerator.new(secret, 1000)
+      )
+    end
+
+    def project_name
+      @project_name ||= @name.gsub(/\W/, "_").downcase
     end
 
     def run
       ENV["PROCESS_COUNT"] ||= "1"
       thread_count = ENV["PROCESS_COUNT"].to_i
       if Cluster.master? && thread_count > 1
-        while(thread_count > 0)
+        while (thread_count > 0)
           Cluster.fork ({"id" => thread_count.to_s})
           thread_count -= 1
         end
@@ -116,20 +124,17 @@ module Amber
   end
 
   class Cluster
-
-    def self.fork (env : Hash)
-        env["FORKED"] = "1"
-        Process.fork { Process.run(PROGRAM_NAME, nil, env, true, false, true, true, true, nil ) }
+    def self.fork(env : Hash)
+      env["FORKED"] = "1"
+      Process.fork { Process.run(PROGRAM_NAME, nil, env, true, false, true, true, true, nil) }
     end
 
     def self.master?
-     (ENV["FORKED"]? || "0") == "0"
+      (ENV["FORKED"]? || "0") == "0"
     end
 
     def self.worker?
-     (ENV["FORKED"]? || "0") == "1"
+      (ENV["FORKED"]? || "0") == "1"
     end
-
   end
-
 end

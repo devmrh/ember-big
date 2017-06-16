@@ -8,8 +8,9 @@
 
 <%- action = (post.id ? "/posts/" + post.id.to_s : "/posts") %>
 <form action="<%= action %>" method="post">
+  <%= csrf_tag() %>
   <%- if post.id %>
-  <input type="hidden" name="_method" value="patch" />
+      <input type="hidden" name="_method" value="patch" />
   <%- end %>
   <div class="form-group">
     <input class="form-control" type="text" name="name" placeholder="Name" value="<%= post.name %>" />
